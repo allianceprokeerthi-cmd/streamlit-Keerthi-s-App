@@ -91,5 +91,10 @@ if st.button("Start 🚀") and query:
     # Save back
     st.session_state.chats[st.session_state.current_chat] = messages
 
+    
+# 🧹 Clear chat button
+if st.button("🧹 Clear Chat"):
+    st.session_state.history = []
+
     # Refresh UI
     st.rerun()
