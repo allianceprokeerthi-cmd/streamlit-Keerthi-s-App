@@ -6,7 +6,7 @@ API_KEY = st.secrets["GEMINI_API_KEY"]
 
 st.set_page_config(page_title="AI Search", page_icon="🤖")
 
-st.title("PSK Search Engine 🤖")
+st.title("Keerthi's Search Engine 🤖")
 
 query = st.text_input("Ask anything...")
 
