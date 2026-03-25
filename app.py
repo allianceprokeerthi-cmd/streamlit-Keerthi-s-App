@@ -43,10 +43,44 @@ with st.sidebar:
     st.markdown("---")
 
     # 📜 Chat list
-    for chat in st.session_state.chats:
-        if st.button(chat):
+   for chat in list(st.session_state.chats.keys()):
+    col1, col2, col3 = st.columns([5,1,1])
+
+    # 📂 Open chat
+    with col1:
+        if st.button(chat, key=f"open_{chat}"):
             st.session_state.current_chat = chat
 
+    # ✏️ Rename
+    with col2:
+        if st.button("✏️", key=f"rename_{chat}"):
+            st.session_state.rename_chat = chat
+
+    # 🗑️ Delete
+    with col3:
+        if st.button("🗑️", key=f"delete_{chat}"):
+            del st.session_state.chats[chat]
+
+            # If deleted current chat → reset
+            if st.session_state.current_chat == chat:
+                st.session_state.current_chat = None
+
+            st.rerun()
+# ✏️ Rename logic
+if "rename_chat" in st.session_state:
+    old_name = st.session_state.rename_chat
+
+    new_name = st.text_input("Rename chat:", value=old_name)
+
+    if st.button("Save Name"):
+        st.session_state.chats[new_name] = st.session_state.chats.pop(old_name)
+
+        # Update current chat
+        if st.session_state.current_chat == old_name:
+            st.session_state.current_chat = new_name
+
+        del st.session_state.rename_chat
+        st.rerun()
 # 🏷️ Title
 st.title("🤖 Billa - AI Assistant")
 st.caption("Hi, I'm Billa 👋 Ask me anything!")
