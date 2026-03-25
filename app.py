@@ -4,7 +4,7 @@ import requests
 # Load API key
 API_KEY = st.secrets["GEMINI_API_KEY"]
 
-st.set_page_config(page_title="AI Search", page_icon="🤖")
+st.set_page_config(page_title="Keerthi's Search", page_icon="🤖")
 
 st.title("Keerthi's Search Engine 🤖")
 
