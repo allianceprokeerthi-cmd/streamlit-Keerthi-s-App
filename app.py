@@ -5,7 +5,7 @@ import requests
 API_KEY = st.secrets["GEMINI_API_KEY"]
 
 # 🌐 Page config
-st.set_page_config(page_title="Keerthi's Chat", page_icon="", layout="wide")
+st.set_page_config(page_title="Keerthi's Chat", page_icon="🌐", layout="wide")
 
 # 🎨 Custom styling
 st.markdown("""
