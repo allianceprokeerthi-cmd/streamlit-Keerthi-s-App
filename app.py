@@ -66,14 +66,14 @@ with st.sidebar:
 
         # ⋮ Menu
         with col2:
-            with st.popover("⋮"):
+            with st.popover(""):
 
                 # ✏️ Rename
-                if st.button("✏️ Rename", key=f"rename_{chat}"):
+                if st.button("Rename", key=f"rename_{chat}"):
                     st.session_state.rename_chat = chat
 
                 # 🗑️ Delete
-                if st.button("🗑️ Delete", key=f"delete_{chat}"):
+                if st.button("Delete", key=f"delete_{chat}"):
                     del st.session_state.chats[chat]
 
                     # Reset current chat if deleted
