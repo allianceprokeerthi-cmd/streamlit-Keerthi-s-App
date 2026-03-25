@@ -5,7 +5,7 @@ import requests
 API_KEY = st.secrets["GEMINI_API_KEY"]
 
 # 🌐 Config
-st.set_page_config(page_title="Billa AI", page_icon="🤖", layout="wide")
+st.set_page_config(page_title="Billa", page_icon="🌐", layout="wide")
 
 # 🧠 Initialize chats
 if "chats" not in st.session_state:
@@ -51,7 +51,7 @@ with st.sidebar:
 col1, col2 = st.columns([6,1])
 
 with col1:
-    st.title("🤖 Billa AI Assistant")
+    st.title("🤖 Billa - AI Assistant")
     st.caption("Hi, I'm Billa 👋 Ask me anything!")
 
 with col2:
