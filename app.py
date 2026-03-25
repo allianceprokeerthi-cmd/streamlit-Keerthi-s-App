@@ -69,7 +69,7 @@ for role, msg in messages:
 # 💬 Input
 query = st.text_input("Ask Billa...")
 
-if st.button("Send") and query:
+if st.button("Start 🚀") and query:
 
     # Add user message
     messages.append(("You", query))
