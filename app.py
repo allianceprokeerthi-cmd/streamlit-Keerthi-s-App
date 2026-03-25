@@ -5,7 +5,7 @@ import requests
 API_KEY = st.secrets["GEMINI_API_KEY"]
 
 # 🌐 Page config
-st.set_page_config(page_title="AI Chat", page_icon="🤖", layout="wide")
+st.set_page_config(page_title="Keerthi's Chat", page_icon="", layout="wide")
 
 # 🎨 Custom styling
 st.markdown("""
@@ -43,7 +43,7 @@ def ask_gemini(prompt):
     return response.json()
 
 # 🏷️ Title
-st.title("🤖 AI Chat Assistant")
+st.title("🤖 Keerthi's Assistant")
 
 # 💬 Input box
 col1, col2 = st.columns([8,1])
