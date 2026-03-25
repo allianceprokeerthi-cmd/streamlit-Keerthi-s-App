@@ -1,105 +1,95 @@
 import streamlit as st
 import requests
 
-# 🔐 Load API Key
+# 🔐 API Key
 API_KEY = st.secrets["GEMINI_API_KEY"]
 
-# 🌐 Page Config
+# 🌐 Config
 st.set_page_config(page_title="Billa AI", page_icon="🌐", layout="wide")
 
-# 🧠 Initialize memory
-if "permanent_history" not in st.session_state:
-    st.session_state.permanent_history = []
+# 🧠 Initialize chats
+if "chats" not in st.session_state:
+    st.session_state.chats = {}
 
-# 🤖 Gemini API function
+if "current_chat" not in st.session_state:
+    st.session_state.current_chat = None
+
+# 🤖 Gemini function
 def ask_gemini(messages):
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key={API_KEY}"
 
-    contents = []
-
-    # 🧠 Billa personality
-    contents.append({
-        "parts": [{
-            "text": "You are Billa, a smart, friendly AI assistant like Siri. Keep answers clear, helpful, and slightly conversational."
-        }]
-    })
+    prompt = "You are Billa, a smart and friendly AI assistant.\n\n"
 
     for role, msg in messages:
-        contents.append({
-            "parts": [{"text": f"{role}: {msg}"}]
-        })
+        prompt += f"{role}: {msg}\n"
 
-    response = requests.post(url, json={"contents": contents})
+    data = {
+        "contents": [{"parts": [{"text": prompt}]}]
+    }
+
+    response = requests.post(url, json=data)
     return response.json()
 
 # 🎯 SIDEBAR
 with st.sidebar:
     st.title("💬 Billa")
 
-    chat_mode = st.radio(
-        "Choose Mode",
-        ["🟢 Permanent Chat", "⚡ Temporary Chat"]
-    )
+    # ➕ New Chat
+    if st.button("➕ New Chat"):
+        chat_name = f"Chat {len(st.session_state.chats) + 1}"
+        st.session_state.chats[chat_name] = []
+        st.session_state.current_chat = chat_name
 
     st.markdown("---")
 
-    if st.button("🧹 Clear Permanent Chat"):
-        st.session_state.permanent_history = []
+    # 📜 Chat list
+    for chat in st.session_state.chats:
+        if st.button(chat):
+            st.session_state.current_chat = chat
 
-    st.markdown("---")
+# 🏷️ Title
+st.title("🤖 Billa AI Assistant")
 
-    # 🔎 Search Panel
-    st.markdown("### 🔎 Search")
-    search_query = st.text_input("Search the web")
+# ⚠️ No chat yet
+if not st.session_state.current_chat:
+    st.info("Create a new chat to start 🚀")
+    st.stop()
 
-    if search_query:
-        st.markdown(f"[👉 Search on DuckDuckGo](https://duckduckgo.com/?q={search_query})")
+# 📂 Current chat messages
+messages = st.session_state.chats[st.session_state.current_chat]
 
-# 🏷️ Main Title
-st.title("🤖 Billa - Your AI Assistant")
-st.caption("Hi, I'm Billa 👋 Ask me anything!")
-
-# 💬 Input Area
-col1, col2 = st.columns([8,1])
-
-with col1:
-    query = st.text_input("Talk to Billa...")
-
-with col2:
-    send = st.button("🚀")
-
-# 📩 Handle Query
-if send and query:
-
-    if chat_mode == "🟢 Permanent Chat":
-        st.session_state.permanent_history.append(("You", query))
-        messages = st.session_state.permanent_history
-    else:
-        messages = [("You", query)]
-
-    with st.spinner("Billa is thinking... 🤔"):
-        result = ask_gemini(messages)
-
-        if "error" in result:
-            answer = "⚠️ Billa is busy right now. Try again later."
-        else:
-            try:
-                answer = result["candidates"][0]["content"]["parts"][0]["text"]
-            except:
-                answer = "⚠️ Error understanding response."
-
-    if chat_mode == "🟢 Permanent Chat":
-        st.session_state.permanent_history.append(("Billa", answer))
-
-# 🧾 Display Chat
-if chat_mode == "🟢 Permanent Chat":
-    history = st.session_state.permanent_history
-else:
-    history = []
-
-for role, msg in history:
+# 💬 Display messages
+for role, msg in messages:
     if role == "You":
         st.markdown(f"**🧑 You:** {msg}")
     else:
         st.markdown(f"**🤖 Billa:** {msg}")
     st.write("---")
+
+# 💬 Input
+query = st.text_input("Ask Billa...")
+
+if st.button("Send") and query:
+
+    # Add user message
+    messages.append(("You", query))
+
+    with st.spinner("Billa thinking... 🤔"):
+        result = ask_gemini(messages)
+
+    if "error" in result:
+        answer = result["error"]["message"]
+    else:
+        try:
+            answer = result["candidates"][0]["content"]["parts"][0]["text"]
+        except:
+            answer = "⚠️ Error reading response"
+
+    # Add AI response
+    messages.append(("Billa", answer))
+
+    # Save back
+    st.session_state.chats[st.session_state.current_chat] = messages
+
+    # Refresh UI
+    st.rerun()
