@@ -49,7 +49,7 @@ with st.sidebar:
 
 # 🏷️ Title
 st.title("🤖 Billa AI Assistant")
-
+st.caption("Hi, I'm Billa 👋 Ask me anything!")
 # ⚠️ No chat yet
 if not st.session_state.current_chat:
     st.info("Create a new chat to start 🚀")
