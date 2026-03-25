@@ -43,7 +43,7 @@ def ask_gemini(messages):
     response = requests.post(url, json=data)
     return response.json()
 
-# 🎯 SIDEBAR
+# 🎯 SIDEBAR 
 with st.sidebar:
     st.title("💬 Billa")
 
@@ -55,34 +55,32 @@ with st.sidebar:
 
     st.markdown("---")
 
-    # 📜 Chat list with rename & delete
+    # 📜 Chat list with ⋮ menu
     for chat in list(st.session_state.chats.keys()):
-        col1, col2 = st.columns([6,1])
+        col1, col2 = st.columns([6, 1])
 
-    # 📂 Open chat
-    with col1:
-        if st.button(chat, key=f"open_{chat}"):
-            st.session_state.current_chat = chat
+        # 📂 Open chat
+        with col1:
+            if st.button(chat, key=f"open_{chat}"):
+                st.session_state.current_chat = chat
 
-    # ⋮ Menu
-    with col2:
-        with st.popover("⋮"):
-            
-            # ✏️ Rename
-            if st.button("✏️ Rename", key=f"rename_{chat}"):
-                st.session_state.rename_chat = chat
+        # ⋮ Menu
+        with col2:
+            with st.popover("⋮"):
 
-            # 🗑️ Delete
-            if st.button("🗑️ Delete", key=f"delete_{chat}"):
-                del st.session_state.chats[chat]
+                # ✏️ Rename
+                if st.button("✏️ Rename", key=f"rename_{chat}"):
+                    st.session_state.rename_chat = chat
 
-                if st.session_state.current_chat == chat:
-                    st.session_state.current_chat = None
+                # 🗑️ Delete
+                if st.button("🗑️ Delete", key=f"delete_{chat}"):
+                    del st.session_state.chats[chat]
 
-                st.rerun()
+                    # Reset current chat if deleted
+                    if st.session_state.current_chat == chat:
+                        st.session_state.current_chat = None
 
-        
-
+                    st.rerun()
 
 # 🏷️ Title + Clear button
 col1, col2 = st.columns([6,1])
