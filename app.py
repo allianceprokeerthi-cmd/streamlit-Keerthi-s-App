@@ -7,7 +7,7 @@ API_KEY = st.secrets["GEMINI_API_KEY"]
 # 🌐 Config
 st.set_page_config(page_title="Billa", page_icon="🌐", layout="wide")
 
-# 🧠 Initialize chats
+# 🧠 Initialize session state
 if "chats" not in st.session_state:
     st.session_state.chats = {}
 
@@ -42,64 +42,67 @@ with st.sidebar:
 
     st.markdown("---")
 
-    # 📜 Chat list
-   for chat in list(st.session_state.chats.keys()):
-    col1, col2, col3 = st.columns([5,1,1])
+    # 📜 Chat list with rename & delete
+    for chat in list(st.session_state.chats.keys()):
+        col1, col2, col3 = st.columns([5,1,1])
 
-    # 📂 Open chat
-    with col1:
-        if st.button(chat, key=f"open_{chat}"):
-            st.session_state.current_chat = chat
+        # 📂 Open chat
+        with col1:
+            if st.button(chat, key=f"open_{chat}"):
+                st.session_state.current_chat = chat
 
-    # ✏️ Rename
-    with col2:
-        if st.button("✏️", key=f"rename_{chat}"):
-            st.session_state.rename_chat = chat
+        # ✏️ Rename
+        with col2:
+            if st.button("✏️", key=f"rename_{chat}"):
+                st.session_state.rename_chat = chat
 
-    # 🗑️ Delete
-    with col3:
-        if st.button("🗑️", key=f"delete_{chat}"):
-            del st.session_state.chats[chat]
+        # 🗑️ Delete
+        with col3:
+            if st.button("🗑️", key=f"delete_{chat}"):
+                del st.session_state.chats[chat]
 
-            # If deleted current chat → reset
-            if st.session_state.current_chat == chat:
-                st.session_state.current_chat = None
+                if st.session_state.current_chat == chat:
+                    st.session_state.current_chat = None
 
-            st.rerun()
-# ✏️ Rename logic
+                st.rerun()
+
+# ✏️ Rename logic (OUTSIDE sidebar)
 if "rename_chat" in st.session_state:
     old_name = st.session_state.rename_chat
 
     new_name = st.text_input("Rename chat:", value=old_name)
 
     if st.button("Save Name"):
-        st.session_state.chats[new_name] = st.session_state.chats.pop(old_name)
+        if new_name in st.session_state.chats:
+            st.error("Chat name already exists")
+        else:
+            st.session_state.chats[new_name] = st.session_state.chats.pop(old_name)
 
-        # Update current chat
-        if st.session_state.current_chat == old_name:
-            st.session_state.current_chat = new_name
+            if st.session_state.current_chat == old_name:
+                st.session_state.current_chat = new_name
 
-        del st.session_state.rename_chat
-        st.rerun()
-# 🏷️ Title
-st.title("🤖 Billa - AI Assistant")
-st.caption("Hi, I'm Billa 👋 Ask me anything!")
+            del st.session_state.rename_chat
+            st.rerun()
 
+# 🏷️ Title + Clear button
 col1, col2 = st.columns([6,1])
 
 with col1:
     st.title("🤖 Billa AI Assistant")
+    st.caption("Hi, I'm Billa 👋 Ask me anything!")
 
 with col2:
-    if st.button("🧹 Clear Chat"):
-        st.session_state.chats[st.session_state.current_chat] = []
-        st.rerun()
-# ⚠️ No chat yet
+    if st.session_state.current_chat:
+        if st.button("🧹 Clear Chat"):
+            st.session_state.chats[st.session_state.current_chat] = []
+            st.rerun()
+
+# ⚠️ No chat selected
 if not st.session_state.current_chat:
     st.info("Create a new chat to start 🚀")
     st.stop()
 
-# 📂 Current chat messages
+# 📂 Current chat
 messages = st.session_state.chats[st.session_state.current_chat]
 
 # 💬 Display messages
@@ -113,7 +116,7 @@ for role, msg in messages:
 # 💬 Input
 query = st.text_input("Ask Billa...")
 
-if st.button("Start 🚀") and query:
+if st.button("🚀 Send") and query:
 
     # Add user message
     messages.append(("You", query))
@@ -132,6 +135,7 @@ if st.button("Start 🚀") and query:
     # Add AI response
     messages.append(("Billa", answer))
 
-    # Save back
+    # Save
     st.session_state.chats[st.session_state.current_chat] = messages
 
+    st.rerun()
