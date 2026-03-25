@@ -50,6 +50,16 @@ with st.sidebar:
 # 🏷️ Title
 st.title("🤖 Billa - AI Assistant")
 st.caption("Hi, I'm Billa 👋 Ask me anything!")
+
+col1, col2 = st.columns([6,1])
+
+with col1:
+    st.title("🤖 Billa AI Assistant")
+
+with col2:
+    if st.button("🧹 Clear Chat"):
+        st.session_state.chats[st.session_state.current_chat] = []
+        st.rerun()
 # ⚠️ No chat yet
 if not st.session_state.current_chat:
     st.info("Create a new chat to start 🚀")
@@ -91,10 +101,3 @@ if st.button("Start 🚀") and query:
     # Save back
     st.session_state.chats[st.session_state.current_chat] = messages
 
-    
-# 🧹 Clear chat button
-if st.button("🧹 Clear Chat"):
-    st.session_state.history = []
-
-    # Refresh UI
-    st.rerun()
