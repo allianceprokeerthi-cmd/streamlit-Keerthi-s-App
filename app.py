@@ -48,11 +48,11 @@ with st.sidebar:
             st.session_state.current_chat = chat
 
 # 🏷️ Title
-st.title("🤖 Billa AI Assistant")
 col1, col2 = st.columns([6,1])
 
 with col1:
     st.title("🤖 Billa AI Assistant")
+    st.caption("Hi, I'm Billa 👋 Ask me anything!")
 
 with col2:
     if st.button("🧹 Clear Chat"):
