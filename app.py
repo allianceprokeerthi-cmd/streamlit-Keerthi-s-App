@@ -57,7 +57,7 @@ with st.sidebar:
 
     # 📜 Chat list with rename & delete
     for chat in list(st.session_state.chats.keys()):
-    col1, col2 = st.columns([6,1])
+        col1, col2 = st.columns([6,1])
 
     # 📂 Open chat
     with col1:
