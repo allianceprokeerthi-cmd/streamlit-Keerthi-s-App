@@ -9,7 +9,7 @@ st.set_page_config(page_title="Billa", page_icon="🌐", layout="wide")
 
 # 🧠 Initialize session state
 if "chats" not in st.session_state:
-    st.session_state.chats = {}
+    st.session_state.chats = load_chats()
 
 if "current_chat" not in st.session_state:
     st.session_state.current_chat = None
