@@ -1,6 +1,19 @@
 import streamlit as st
 import requests
+import json
+import os
 
+FILE_NAME = "chats.json"
+
+def load_chats():
+    if os.path.exists(FILE_NAME):
+        with open(FILE_NAME, "r") as f:
+            return json.load(f)
+    return {}
+
+def save_chats(chats):
+    with open(FILE_NAME, "w") as f:
+        json.dump(chats, f)
 # 🔐 API Key
 API_KEY = st.secrets["GEMINI_API_KEY"]
 
